@@ -91,7 +91,7 @@ namespace Tanks.Complete
         // Increases the health of the tank
         public void PowerUpHealing(float healAmount)
         {
-            m_TankHealth.IncreaseHealth(healAmount);
+            m_TankHealth.Heal(healAmount);
             m_PowerUpHUD.SetActivePowerUp(PowerUp.PowerUpType.Healing, 1.0f);
         }
 
