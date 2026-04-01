@@ -15,7 +15,6 @@ namespace Tanks.Complete
         private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
         private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
         private float m_CurrentHealth;                      // How much health the tank currently has.
-        private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
         private float m_ShieldValue;                        // Percentage of reduced damage when the tank has a shield.
         private bool m_IsInvincible;                        // Is the tank invincible in this moment?
 
@@ -42,7 +41,6 @@ namespace Tanks.Complete
         {
             // When the tank is enabled, reset the tank's health and whether or not it's dead.
             m_CurrentHealth = m_StartingHealth;
-            m_Dead = false;
             m_HasShield = false;
             m_ShieldValue = 0;
             m_IsInvincible = false;
@@ -73,9 +71,6 @@ namespace Tanks.Complete
 
         private void OnDeath ()
         {
-            // Set the flag so that this function is only called once.
-            m_Dead = true;
-
             // Move the instantiated explosion prefab to the tank's position and turn it on.
             m_ExplosionParticles.transform.position = transform.position;
             m_ExplosionParticles.gameObject.SetActive (true);
@@ -103,11 +98,14 @@ namespace Tanks.Complete
 
         public bool IsDead()
         {
-            return m_Dead;
+            return m_CurrentHealth < 0f;
         }
 
         public void TakeDamage(float value)
         {
+            if (IsDead())
+                return;
+
             // Check if the tank is not invincible
             if (!m_IsInvincible)
             {
@@ -117,7 +115,7 @@ namespace Tanks.Complete
                 OnHealthUpdated?.Invoke(m_CurrentHealth);
 
                 // If the current health is at or below zero and it has not yet been registered, call OnDeath.
-                if (m_CurrentHealth <= 0f && !m_Dead)
+                if (m_CurrentHealth <= 0f)
                 {
                     OnDeath();
                 }
