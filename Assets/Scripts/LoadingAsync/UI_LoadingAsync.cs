@@ -35,6 +35,11 @@ public class UI_LoadingAsync : MonoBehaviour
     [Button]
     private void StartLoading()
     {
+        if (_cts != null)
+        {
+            _cts.Cancel();
+        }
+
         _cts = new CancellationTokenSource();
 
         CancellationToken ct = _cts.Token;
