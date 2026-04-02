@@ -12,16 +12,24 @@ public class UI_LoadingAsync : MonoBehaviour
     [SerializeField] private Image _backgroundImg;
     [SerializeField] private Image _fillImg;
 
+    [Header("Sliders Colors")]
     [SerializeField] private Color _fillColor;
     [SerializeField] private Color _backgroundColor;
 
+    [Header("Param")]
     [SerializeField] private float _timeToFill = 5f;
+    [SerializeField] private bool _autoFillOnStart;
 
     CancellationTokenSource _cts;
 
     private void Start()
     {
         InitSlider();
+
+        if (_autoFillOnStart)
+        {
+            StartLoading();
+        }
     }
 
     private void InitSlider()
