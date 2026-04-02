@@ -26,6 +26,7 @@ public class UI_LoadingAsync : MonoBehaviour
     [SerializeField] private InputActionProperty _startLoadingInput;
     [SerializeField] private InputActionProperty _cancelLoadingInput;
 
+    private bool _loadingIsRunning;
     CancellationTokenSource _cts;
 
     private void Start()
@@ -71,10 +72,12 @@ public class UI_LoadingAsync : MonoBehaviour
     [Button]
     private void StartLoading()
     {
-        if (_cts != null)
-        {
-            _cts.Cancel();
-        }
+        if (_loadingIsRunning)
+            return;
+
+        _loadingIsRunning = true;
+
+        _cts?.Dispose();
 
         _cts = new CancellationTokenSource();
 
@@ -119,7 +122,6 @@ public class UI_LoadingAsync : MonoBehaviour
             _slider.value = 1f;
         }
 
-
-
+        _loadingIsRunning = false;
     }
 }
