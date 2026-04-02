@@ -4,6 +4,8 @@ using NaughtyAttributes;
 using Cysharp.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Threading;
+using UnityEngine.InputSystem;
+using System;
 
 public class UI_LoadingAsync : MonoBehaviour
 {
@@ -20,6 +22,10 @@ public class UI_LoadingAsync : MonoBehaviour
     [SerializeField] private float _timeToFill = 5f;
     [SerializeField] private bool _autoFillOnStart;
 
+    [Header("Quick Inputs")]
+    [SerializeField] private InputActionProperty _startLoadingInput;
+    [SerializeField] private InputActionProperty _cancelLoadingInput;
+
     CancellationTokenSource _cts;
 
     private void Start()
@@ -30,6 +36,28 @@ public class UI_LoadingAsync : MonoBehaviour
         {
             StartLoading();
         }
+
+        _startLoadingInput.action.Enable();
+        _cancelLoadingInput.action.Enable();
+
+        _startLoadingInput.action.started += OnStartLoadingInput;
+        _cancelLoadingInput.action.started += OnCancelLoadingInput;
+    }
+
+    private void OnDestroy()
+    {
+        _startLoadingInput.action.started -= OnStartLoadingInput;
+        _cancelLoadingInput.action.started -= OnCancelLoadingInput;
+    }
+
+    private void OnStartLoadingInput(InputAction.CallbackContext context)
+    {
+        StartLoading();
+    }
+
+    private void OnCancelLoadingInput(InputAction.CallbackContext context)
+    {
+        CancelLoading();
     }
 
     private void InitSlider()
